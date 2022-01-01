@@ -1,12 +1,20 @@
 <script lang="ts">
+  import { slide } from 'svelte/transition'
+
+  type TodoItem = {
+	id: number;
+	title: string;
+  }
+
   let title = '';
-  let todoList: string[] = [];
+  let todoList: TodoItem[] = [];
 
   $: disabledCreateButton = title === '';
 
   // 作成ボタンを押したときの処理
   const handleClickCreateButton = () => {
-    todoList = [...todoList, title];
+	const id = new Date().getTime(); 
+    todoList = [...todoList, { id, title }];
     title = '';
   };
 
@@ -43,8 +51,8 @@
 				<div>アイテムを作成してください</div>
 			{:else}
 				<ul class="list-group">
-				{#each todoList as todoItem, index}
-					<li class="list-group-item align-middle">
+				{#each todoList as todoItem, index (todoItem.id)}
+					<li transition:slide class="list-group-item align-middle">
 					{todoItem}
 					<button
 						class="btn btn-sm btn-success float-right"
